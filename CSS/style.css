@@ -2,10 +2,14 @@
 
 :root {
   --main-color: #00eeff;
+  --main-color-alt: #7950f2;
   --text-color: #ffffff;
-  --bg-color-01: #1f242d;
-  --bg-color-02: #323946;
-  --color-00: #0000001a; /*cor com canal alfa ou seja transparencia*/
+  --bg-color-01: transparent;
+  --bg-color-02: transparent;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --color-00: #0000001a;
+  /*cor com canal alfa ou seja transparencia*/
 
   /*cor extra*/
   --color-01: #999999;
@@ -22,7 +26,8 @@
   text-decoration: none;
   border: none;
   outline: none;
-  scroll-behavior: smooth; /*para correr a pagina suave*/
+  scroll-behavior: smooth;
+  /*para correr a pagina suave*/
 }
 
 html {
@@ -31,8 +36,26 @@ html {
 }
 
 body {
-  background-color: var(--bg-color-01);
+  margin: 0;
+  background: linear-gradient(-45deg, #0b0f19, #1a1b41, #0f2027, #203a43);
+  background-size: 400% 400%;
+  animation: bgGradient 15s ease infinite;
   color: var(--text-color);
+  min-height: 100vh;
+}
+
+@keyframes bgGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 header {
@@ -41,12 +64,16 @@ header {
   left: 0;
   width: 100%;
   padding: 1.1rem;
-  background-color: var(--bg-color-01);
+  background: rgba(11, 15, 25, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 100;
 }
+
 .logo {
   font-size: 1.7rem;
   color: var(--text-color);
@@ -54,16 +81,20 @@ header {
   cursor: default;
 }
 
-.nav-responsive{
+.nav-responsive {
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
-  background-color: var(--bg-color-01);
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
 }
 
-.nav a, .nav-responsive a{
+.nav a,
+.nav-responsive a {
   font-size: 1.2rem;
   color: var(--text-color);
   padding: 0.5rem 1rem;
@@ -72,7 +103,8 @@ header {
   /*border: solid 1px var(--color-02); /*teste*/
 }
 
-.nav a:hover, .nav-responsive a:hover {
+.nav a:hover,
+.nav-responsive a:hover {
   color: var(--main-color);
 }
 
@@ -95,36 +127,34 @@ span {
   align-items: center;
 }
 
-.home-img {
-  border-right: solid 0.6rem;
-  border-bottom: solid 0.6rem;
-  border-image: linear-gradient(
-    135deg,
-    transparent 59%,
-    var(--main-color)
-  )1; /*coloquei .home-img separado por causa das imagens que vão ter um efeito deferente nas laterais*/
+.home-img,
+.about-img {
+  position: relative;
+  z-index: 1;
 }
 
-.about-img {
-  border-left: solid 0.6rem;
-  border-bottom: solid 0.6rem;
-  border-image: linear-gradient(
-    225deg,
-    transparent 59%,
-    var(--main-color)
-  )1; /**/
-
+.home-img::before,
+.about-img::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(135deg, var(--main-color), var(--main-color-alt));
+  z-index: -1;
+  filter: blur(10px);
+  border-radius: inherit;
 }
 
 .home-img img,
 .about-img img {
   width: 100%;
-  margin-bottom: -7px;
+  display: block;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.about {
-  background-color: var(--bg-color-02);
-}
+
 
 .home-content,
 .about-content {
@@ -162,6 +192,7 @@ span {
   flex-direction: row;
   justify-content: space-evenly;
 }
+
 .services-box {
   display: flex;
   flex-direction: column;
@@ -174,14 +205,18 @@ span {
   padding: 2rem 1rem 2.5rem;
   border-radius: 1.2rem;
   text-align: center;
-  border: solid 0.15rem var(--bg-color-01);
-  background-color: var(--bg-color-02);
-  transition: 0.5s ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
 }
 
 .services-container .services-box:hover {
-  border-color: var(--main-color);
-  transform: scale(1.01);
+  border-color: rgba(0, 238, 255, 0.5);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 45px rgba(0, 238, 255, 0.2);
 }
 
 .services-box i {
@@ -196,16 +231,15 @@ span {
 .services-box p {
   font-size: 0.8rem;
   letter-spacing: 0.1;
-  display: -webkit-box; /*N linhas ...*/
+  display: -webkit-box;
+  /*N linhas ...*/
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.portfolio {
-  background-color: var(--bg-color-02);
-}
+
 
 .portfolio-container {
   display: grid;
@@ -309,6 +343,7 @@ footer {
   padding: 1.2rem;
   background-color: var(--bg-color-01);
 }
+
 .social-media img {
   width: 3.5rem;
 }
@@ -339,21 +374,23 @@ footer {
 .btn {
   display: inline-block;
   padding: 0.7rem 1.8rem;
-  background-color: var(--main-color);
+  background: linear-gradient(45deg, var(--main-color), var(--main-color-alt));
   border-radius: 2rem;
-  color: var(--bg-color-02);
+  color: var(--text-color);
   font-weight: 600;
   letter-spacing: 0.1rem;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
   margin-top: 1.2rem;
+  box-shadow: 0 0 15px rgba(0, 238, 255, 0.3);
 }
 
 .btn:hover {
-  box-shadow: 0 0 0.4rem var(--main-color);
-  background-color: inherit; /*aqui vai erdar a mesma cor que esta no elemento pai*/
-  color: var(--main-color);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 25px rgba(121, 80, 242, 0.6);
+  color: var(--text-color);
   cursor: pointer;
 }
+
 /*== button ==*/
 
 /* menu hamburguer*/
@@ -384,6 +421,7 @@ footer {
 .change .bar3 {
   transform: translate(0, -0.65rem) rotate(45deg);
 }
+
 /* menu /hamburguer*/
 
 /*== media queries ==*/
@@ -438,7 +476,7 @@ footer {
     line-height: 1.3;
   }
 
-  .services-container{
+  .services-container {
     flex-direction: column;
     align-items: center;
   }
@@ -450,11 +488,13 @@ footer {
 
 /* Samll (sm): Smartphone (landscape)*/
 @media (min-width: 576px) {
+
   .home-img,
   .about-img {
     width: 65%;
     max-width: 65%;
   }
+
   .services-box {
     width: 70%;
   }
@@ -465,32 +505,42 @@ footer {
   .menu-hamburguer {
     display: none;
   }
+
   .nav {
     display: block;
   }
-  .nav-responsive, .nav-responsive a{
+
+  .nav-responsive,
+  .nav-responsive a {
     display: none;
   }
-  .home, .about{
+
+  .home,
+  .about {
     flex-direction: row;
     justify-content: space-evenly;
   }
-  .home-img, .about-img{
+
+  .home-img,
+  .about-img {
     max-width: 35%;
   }
-  .home-content, .about-content{
+
+  .home-content,
+  .about-content {
     width: 50%;
   }
-  .services-box{
+
+  .services-box {
     width: 60%;
     margin-bottom: 2rem;
   }
 
-  .portfolio-container{
+  .portfolio-container {
     grid-template-columns: auto auto;
   }
 
-  form .input-box input{
+  form .input-box input {
     width: 49%;
   }
 }
@@ -498,7 +548,7 @@ footer {
 /* large (lg): Notebook*/
 @media (min-width: 992px) {
 
-  .services-container{
+  .services-container {
     flex-direction: row;
     gap: 1.2rem;
   }
@@ -506,21 +556,46 @@ footer {
 
 /* Extra Large (x1): Desktop*/
 @media (min-width: 1200px) {
-  
-  .home-img, .about-img{
+
+  .home-img,
+  .about-img {
     max-width: 25%;
   }
 
-  .home-content h1{
+  .home-content h1 {
     font-size: 2.7rem;
   }
 
-  .home-content h3{
+  .home-content h3 {
     font-size: 2rem;
   }
-  
-  .portfolio-container{
+
+  .portfolio-container {
     grid-template-columns: auto auto auto;
   }
 }
+
 /*== /media queries ==*/
+
+/* Antigravity Scroll Reveal Animations */
+.antigravity-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.antigravity-section.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Antigravity Particles Background */
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
