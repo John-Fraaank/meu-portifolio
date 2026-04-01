@@ -189,30 +189,47 @@ animateParticles();
 // === LER MAIS MODAL LOGIC ===
 const modal = document.createElement('div');
 modal.className = 'modal';
-modal.id = 'aboutModal';
+modal.id = 'genericModal';
 
 modal.innerHTML = `
   <div class="modal-content">
     <span class="close-btn">&times;</span>
-    <h2 style="text-align: center; margin-bottom: 1.5rem;">Sobre <span>mim</span></h2>
-    <div class="modal-body"></div>
+    <h2 id="modalTitle" style="text-align: center; margin-bottom: 1.5rem;"></h2>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 `;
 document.body.appendChild(modal);
 
-const readMoreBtn = document.querySelector('.about-content .btn');
 const closeBtn = modal.querySelector('.close-btn');
-const modalBody = modal.querySelector('.modal-body');
-const aboutTextHtml = document.querySelector('.about-content p');
+const modalTitle = modal.querySelector('#modalTitle');
+const modalBody = modal.querySelector('#modalBody');
 
-if (readMoreBtn && aboutTextHtml) {
-    readMoreBtn.addEventListener('click', (e) => {
+// Seleciona todos os botões "Ler mais" das seções de interesse
+const allReadMoreBtns = document.querySelectorAll('.services-box .btn, .about-content .btn');
+
+allReadMoreBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Clona e passa o texto EXATO original do portfolio para o modal flutuante
-        modalBody.innerHTML = aboutTextHtml.innerHTML;
+        
+        let title = "";
+        let content = "";
+
+        // Verifica se o clique veio da seção de serviços ou sobre
+        if (btn.closest('.services-box')) {
+            const box = btn.closest('.services-box');
+            title = box.querySelector('h3').innerText;
+            content = box.querySelector('p').innerHTML;
+        } else if (btn.closest('.about-content')) {
+            const container = btn.closest('.about-content');
+            title = 'Sobre <span>mim</span>';
+            content = container.querySelector('p').innerHTML;
+        }
+
+        modalTitle.innerHTML = title;
+        modalBody.innerHTML = content;
         modal.classList.add('show');
     });
-}
+});
 
 closeBtn.addEventListener('click', () => {
     modal.classList.remove('show');

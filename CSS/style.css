@@ -238,7 +238,8 @@ span {
   letter-spacing: 0.1;
   display: -webkit-box;
   /*N linhas ...*/
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -697,6 +698,7 @@ footer {
 .about-content p {
   display: -webkit-box;
   -webkit-line-clamp: 5;
+  line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
