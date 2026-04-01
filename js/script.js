@@ -185,3 +185,41 @@ window.addEventListener('mouseout', function () {
 
 initParticles();
 animateParticles();
+
+// === LER MAIS MODAL LOGIC ===
+const modal = document.createElement('div');
+modal.className = 'modal';
+modal.id = 'aboutModal';
+
+modal.innerHTML = `
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2 style="text-align: center; margin-bottom: 1.5rem;">Sobre <span>mim</span></h2>
+    <div class="modal-body"></div>
+  </div>
+`;
+document.body.appendChild(modal);
+
+const readMoreBtn = document.querySelector('.about-content .btn');
+const closeBtn = modal.querySelector('.close-btn');
+const modalBody = modal.querySelector('.modal-body');
+const aboutTextHtml = document.querySelector('.about-content p');
+
+if (readMoreBtn && aboutTextHtml) {
+    readMoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Clona e passa o texto EXATO original do portfolio para o modal flutuante
+        modalBody.innerHTML = aboutTextHtml.innerHTML;
+        modal.classList.add('show');
+    });
+}
+
+closeBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('show');
+    }
+});
