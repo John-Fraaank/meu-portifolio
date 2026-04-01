@@ -245,21 +245,24 @@
   <section class="contact" id="contact">
     <h2>Entre em contato <span>comigo!</span></h2>
 
-    <form action="#">
-      <!--aqui no action não pode esta vasio, o verificador do HTML da erro-->
+    <form action="https://formsubmit.co/dev.johnfrank.jf02@gmail.com" method="POST">
+      <!-- Configurações do FormSubmit -->
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      
       <div class="input-box">
-        <input type="text" placeholder="Nome completo" />
-        <input type="email" placeholder="E-mail" />
+        <input type="text" name="nome" placeholder="Nome completo" required />
+        <input type="email" name="email" placeholder="E-mail" required />
       </div>
 
       <div class="input-box">
-        <input type="tel" placeholder="Número de telefone" />
-        <input type="text" placeholder="assunto" />
+        <input type="tel" name="telefone" placeholder="Número de telefone" />
+        <input type="text" name="assunto" placeholder="Assunto" required />
       </div>
 
-      <textarea cols="30" rows="8" placeholder="Messagem"></textarea>
+      <textarea name="mensagem" cols="30" rows="8" placeholder="Mensagem" required></textarea>
 
-      <a href="#" class="btn">Enviar Messagem</a>
+      <button type="submit" class="btn">Enviar Mensagem</button>
     </form>
   </section>
   <!-- contact section -->
