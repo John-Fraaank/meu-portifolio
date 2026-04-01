@@ -66,7 +66,7 @@ let particlesArray = [];
 let mouse = {
     x: null,
     y: null,
-    radius: (canvas.height / 80) * (canvas.width / 80)
+    radius: 120 // Raio de interação do mouse
 };
 
 window.addEventListener('mousemove', function (event) {
@@ -75,38 +75,56 @@ window.addEventListener('mousemove', function (event) {
 });
 
 class Particle {
-    constructor(x, y, directionX, directionY, size, color) {
+    constructor(x, y, size, color) {
+        this.baseX = x; // Ponto de origem para onde ele volta
+        this.baseY = y;
         this.x = x;
         this.y = y;
-        this.directionX = directionX;
-        this.directionY = directionY;
         this.size = size;
         this.color = color;
+        this.density = (Math.random() * 20) + 5; // Ajuda na força de repulsão
+
+        // Variaveis para o movimento aleatorio lento
+        this.angle = Math.random() * Math.PI * 2;
+        this.wanderRadius = Math.random() * 30 + 10;
+        this.wanderSpeed = Math.random() * 0.01 + 0.005;
     }
+
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = '#00eeff'; // Neon Cyan
+        ctx.fillStyle = this.color;
         ctx.fill();
     }
-    update() {
-        if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-        if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
+    update() {
+        // 1. Calcular a posição flutuante base (movendo-se lentamente)
+        this.angle += this.wanderSpeed;
+        let targetX = this.baseX + Math.cos(this.angle) * this.wanderRadius;
+        let targetY = this.baseY + Math.sin(this.angle) * this.wanderRadius;
+
+        // 2. Interação com o Mouse (Repulsão forte)
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Efeito de repulsao do mouse
-        if (distance < mouse.radius + this.size) {
-            if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1.5;
-            if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1.5;
-            if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1.5;
-            if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1.5;
+        if (mouse.x != null && distance < mouse.radius) {
+            // Mouse proximo: Afastar
+            let forceDirectionX = dx / distance;
+            let forceDirectionY = dy / distance;
+            let force = (mouse.radius - distance) / mouse.radius;
+
+            let directionX = forceDirectionX * force * this.density;
+            let directionY = forceDirectionY * force * this.density;
+
+            this.x -= directionX * 2; // repelir mais rapido
+            this.y -= directionY * 2;
+        } else {
+            // Mouse longe: Voltar suavemente para a posição flutuante (Efeito elástico/Mola)
+            this.x += (targetX - this.x) * 0.05;
+            this.y += (targetY - this.y) * 0.05;
         }
 
-        this.x += this.directionX;
-        this.y += this.directionY;
         this.draw();
     }
 }
@@ -116,29 +134,30 @@ function initParticles() {
     let numberOfParticles = (canvas.height * canvas.width) / 9000;
     for (let i = 0; i < numberOfParticles; i++) {
         let size = (Math.random() * 2) + 1;
-        let x = (Math.random() * ((window.innerWidth - size * 2) - (size * 2)) + size * 2);
-        let y = (Math.random() * ((window.innerHeight - size * 2) - (size * 2)) + size * 2);
-        let directionX = (Math.random() * 1) - 0.5;
-        let directionY = (Math.random() * 1) - 0.5;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
         let color = '#00eeff';
-        particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        particlesArray.push(new Particle(x, y, size, color));
     }
 }
 
 function connectParticles() {
     for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a; b < particlesArray.length; b++) {
-            let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+            let dx = particlesArray[a].x - particlesArray[b].x;
+            let dy = particlesArray[a].y - particlesArray[b].y;
+            let distance = (dx * dx) + (dy * dy);
 
-            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                let opacityValue = 1 - (distance / 15000);
-                ctx.strokeStyle = 'rgba(0, 238, 255,' + opacityValue + ')';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                ctx.stroke();
+            if (distance < (canvas.width / 8) * (canvas.height / 8)) {
+                let opacityValue = 1 - (distance / 20000);
+                if (opacityValue > 0) {
+                    ctx.strokeStyle = 'rgba(0, 238, 255,' + opacityValue * 0.5 + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
             }
         }
     }
@@ -146,7 +165,7 @@ function connectParticles() {
 
 function animateParticles() {
     requestAnimationFrame(animateParticles);
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
     }
@@ -156,12 +175,12 @@ function animateParticles() {
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    mouse.radius = (canvas.height / 80) * (canvas.width / 80);
     initParticles();
 });
 
 window.addEventListener('mouseout', function () {
-    mouse.x = undefined; mouse.y = undefined;
+    mouse.x = undefined;
+    mouse.y = undefined;
 });
 
 initParticles();
