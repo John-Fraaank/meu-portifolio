@@ -240,3 +240,24 @@ window.addEventListener('click', (e) => {
         modal.classList.remove('show');
     }
 });
+
+// === DINAMIC AGE CALCULATION ===
+function updateAge() {
+    const birthDate = new Date('1987-04-02');
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth() - birthDate.getMonth();
+
+    // Se o mês atual é menor que o mês de nascimento, ou se é o mesmo mês mas o dia ainda não chegou
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    const ageElement = document.getElementById('user-age');
+    if (ageElement) {
+        ageElement.innerText = age;
+    }
+}
+
+// Executa ao carregar a página
+updateAge();

@@ -359,6 +359,7 @@ input::-webkit-inner-spin-button {
 /* Hide spin buttons for Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 form textarea {
@@ -726,4 +727,9 @@ footer {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#user-age {
+  color: var(--main-color);
+  font-weight: 600;
 }
