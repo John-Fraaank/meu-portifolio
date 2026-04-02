@@ -243,7 +243,7 @@ window.addEventListener('click', (e) => {
 
 // === DINAMIC AGE CALCULATION ===
 function updateAge() {
-    const birthDate = new Date('1987-04-02');
+    const birthDate = new Date(1987, 3, 2); // April 2nd, 1987 (Month is 0-indexed)
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const month = today.getMonth() - birthDate.getMonth();
