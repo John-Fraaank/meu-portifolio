@@ -138,7 +138,7 @@ span {
   z-index: 1;
 }
 
-.home-img::before,
+/* .home-img::before,
 .about-img::before {
   content: "";
   position: absolute;
@@ -150,13 +150,13 @@ span {
   z-index: -1;
   filter: blur(10px);
   border-radius: inherit;
-}
+} */
 
 .home-img img,
 .about-img img {
   width: 100%;
   display: block;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); */
 }
 
 
